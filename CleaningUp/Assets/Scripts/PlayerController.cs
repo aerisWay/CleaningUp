@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        playerAnimator = GetComponent<Animator>();
+        playerAnimator = GetComponentInParent<Animator>();
     }
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -96,10 +96,15 @@ public class PlayerController : MonoBehaviour
     {
         if(movementInput != Vector2.zero)
         {
-            //playerAnimator.SetBool("Running", true);
+            playerAnimator.SetBool("Walking", true);
             
             Vector3 movementVector = new Vector3(movementInput.x, 0, movementInput.y).normalized;
             characterController.Move(movementVector * playerSpeed);
+            transform.rotation = Quaternion.LookRotation(movementVector);
+        }
+        else
+        {
+            playerAnimator.SetBool("Walking", false);
         }
     }
 
