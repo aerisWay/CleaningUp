@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,15 +10,23 @@ public class GameManager : MonoBehaviour
     [SerializeField] float maxTimeWithoutKilling;
     [SerializeField] GameObject extremeCanvas;
     [SerializeField] GameObject adviseCanvas;
-    [SerializeField] GameObject rightCamera;
     [SerializeField] GameObject leftCamera;
+    [SerializeField] GameObject rightCamera;
+    [SerializeField] GameObject guardPrefab;
     float warningTime;
     float extremeTime;
+    CinemachineVirtualCamera vcam1;
+    CinemachineVirtualCamera vcam2;
+    CinemachineBasicMultiChannelPerlin noise;
 
     private void Awake()
     {
         warningTime = maxTimeWithoutKilling * 6 / 10;
-        extremeTime = maxTimeWithoutKilling * 8/ 10;
+        extremeTime = maxTimeWithoutKilling * 8 / 10;
+
+        vcam1 = leftCamera.GetComponent<CinemachineVirtualCamera>();
+        vcam2 = rightCamera.GetComponent<CinemachineVirtualCamera>();
+        noise = vcam1.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
     private void Update()
@@ -26,7 +35,7 @@ public class GameManager : MonoBehaviour
 
         if(timeWithoutKilling > maxTimeWithoutKilling)
         {
-            GameOver();
+            GuardGameOver();
         }
         else if(timeWithoutKilling > extremeTime)
         {
@@ -42,18 +51,24 @@ public class GameManager : MonoBehaviour
 
     private void ScreenAdvises()
     {
-        rightCamera.GetComponent<CameraShake>().Shake(5f, 10f);
-        leftCamera.GetComponent<CameraShake>().Shake(5f, 10f);
+        Shake(3.0f, 5.0f);       
+    }
+
+    private void Shake(float shakeAmplitude, float shakeFrequency)
+    {
+        //noise.m_AmplitudeGain = shakeAmplitude;
+        //noise.m_FrequencyGain = shakeFrequency;
     }
 
     private void ScreenExtremeAdvises()
     {
-        rightCamera.GetComponent<CameraShake>().Shake(10f, 10f);
-        leftCamera.GetComponent<CameraShake>().Shake(10f, 10f);
+        
     }
 
-    private void GameOver()
+    private void GuardGameOver()
     {
        
     }
+
+  
 }

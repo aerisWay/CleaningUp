@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private Vector2 movementInput = Vector2.zero;
-    private bool killing = false;
+    public bool killing = false;
     private bool doingAction = false;
     Animator playerAnimator;
 

@@ -10,9 +10,12 @@ public class GuestBehaviour : MonoBehaviour
     }
 
     private bool alive = true;
+    public bool seeingPlayer = false;
+    public GameObject playerSeen;
     private NPCState currentState;
-    
+
     [Header("Reaction Time")]
+    [SerializeField] GameObject gameManager;
     [SerializeField] float minReactionTime;
     [SerializeField] float maxReactionTime;
     [SerializeField] bool decisionDone = false;
@@ -41,7 +44,7 @@ public class GuestBehaviour : MonoBehaviour
     [Header("Pathfinder")]
     [SerializeField] Vector3 destination;
    
-    private int alertLevel; //0 si no ven nada, 1 si han visto un cuerpo, 2 sospechan de ti y huirán
+    [SerializeField] int alertLevel; //0 si no ven nada, 1 si han visto un cuerpo, 2 sospechan de ti y huirán
 
     private void Awake()
     {
@@ -143,6 +146,20 @@ public class GuestBehaviour : MonoBehaviour
 
     private void Update()
     {
+        if(alertLevel != 3)
+        {
+            if (seeingPlayer && playerSeen != null)
+            {
+                if (playerSeen.GetComponent<PlayerController>().killing)
+                {
+                    StopAllCoroutines();
+                    //gameManager.GetComponent<GameManager>().GuardGameOver();
+                }
+                
+            }
+        }
+        
+
         if (decisionDone)
         {
             switch (currentState)
