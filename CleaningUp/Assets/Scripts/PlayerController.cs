@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject currentSelectedInteractable;
     [SerializeField] GameObject equipedObject;
     [SerializeField] float takeObjectCooldown;
-    [SerializeField] bool canTakeObject = true;
+    [SerializeField] bool canTakeObject = true;    
+    [SerializeField] GameObject knife;
     CharacterController characterController;
 
     private void Awake()
@@ -52,8 +53,61 @@ public class PlayerController : MonoBehaviour
         DetectInRange();
         CanTakeObject();
         ThrowObject();
+        TalkGuest();
+        AtackGuest();
     }
 
+    private void TalkGuest()
+    {
+        if (currentSelectedInteractable != null)
+        {
+            if (currentSelectedInteractable.CompareTag("Human") && doingAction)
+            {
+                StartCoroutine("TurnToPlayer");
+                doingAction = false;
+            }
+        }
+    }
+
+    IEnumerator TurnToPlayer()
+    {
+        yield return new WaitForSeconds(0.1f);
+        print("Me giro.");
+        Vector3 rotation = transform.position - currentSelectedInteractable.transform.position;
+        currentSelectedInteractable.transform.parent.rotation = Quaternion.LookRotation(new Vector3(rotation.x,0,rotation.z));
+    }
+
+    private void AtackGuest()
+    {
+        if(currentSelectedInteractable != null)
+        {
+            if (currentSelectedInteractable.CompareTag("Human") && killing)
+            {
+                Debug.Log("Se murió");
+                playerAnimator.SetBool("Attacking", true);
+                StartCoroutine("AtackRecuperation");
+                killing = false;
+                
+            }
+        }
+    }
+
+    IEnumerator AtackRecuperation()
+    {
+
+        knife.SetActive(true);
+        currentSelectedInteractable.GetComponent<Hurtable>().PlayAnim(gameObject);
+
+        yield return new WaitForSeconds(2);
+
+
+        currentSelectedInteractable.GetComponent<Hurtable>().Die();
+        print("Atack");
+        playerAnimator.SetBool("Attacking", false);
+        knife.SetActive(false);
+        currentSelectedInteractable = null;
+    
+    }
     private void ThrowObject()
     {
         if(equipedObject != null && doingAction && canTakeObject)
@@ -94,7 +148,7 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        if(movementInput != Vector2.zero)
+        if(movementInput != Vector2.zero && !playerAnimator.GetBool("Attacking"))
         {
             playerAnimator.SetBool("Walking", true);
             
