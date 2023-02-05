@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -63,6 +64,7 @@ public class PlayerController : MonoBehaviour
         {
             if (currentSelectedInteractable.CompareTag("Human") && doingAction)
             {
+                currentSelectedInteractable.GetComponentInParent<NavMeshAgent>().isStopped = true;
                 StartCoroutine("TurnToPlayer");
                 doingAction = false;
             }
@@ -73,6 +75,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         print("Me giro.");
+
         Vector3 rotation = transform.position - currentSelectedInteractable.transform.position;
         currentSelectedInteractable.transform.parent.rotation = Quaternion.LookRotation(new Vector3(rotation.x,0,rotation.z));
     }
@@ -85,6 +88,7 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("Se murió");
                 playerAnimator.SetBool("Attacking", true);
+                currentSelectedInteractable.GetComponentInParent<NavMeshAgent>().isStopped = true;
                 StartCoroutine("AtackRecuperation");
                 killing = false;
                 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GuestBehaviour : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class GuestBehaviour : MonoBehaviour
     public bool seeingPlayer = false;
     public GameObject playerSeen;
     private NPCState currentState;
+    private NavMeshAgent navMesh;
+    private Animator guestAnimator;
+
 
     [Header("Reaction Time")]
     [SerializeField] GameObject gameManager;
@@ -48,15 +52,41 @@ public class GuestBehaviour : MonoBehaviour
 
     private void Awake()
     {
+        guestAnimator = GetComponentInParent<Animator>();
+        navMesh = GetComponentInParent<NavMeshAgent>();
         RandomizeValues();
         AddValueList();
         AddMultiplierList();
         PutInRandomLocation();
         currentState = NPCState.STAND;
         TakeDecision();
+        destination = GetRandomPoint(transform.position, 100.0f);
+        navMesh.SetDestination(destination);
+        StartCoroutine("DestinationDecision");
 
     }
 
+    IEnumerator DestinationDecision()
+    {
+        yield return new WaitForSeconds(15);
+        destination = GetRandomPoint(transform.position, 20.0f);
+        navMesh.SetDestination(destination);
+        StartCoroutine("DestinationDecision");
+
+    }
+
+    public static Vector3 GetRandomPoint(Vector3 center, float maxDistance)
+    {
+        // Get Random Point inside Sphere which position is center, radius is maxDistance
+        Vector3 randomPos = Random.insideUnitSphere * maxDistance + center;
+
+        NavMeshHit hit; // NavMesh Sampling Info Container
+
+        // from randomPos find a nearest point on NavMesh surface in range of maxDistance
+        NavMesh.SamplePosition(randomPos, out hit, maxDistance, NavMesh.AllAreas);
+
+        return hit.position;
+    }
     private void RandomizeValues()
     {
         
@@ -146,6 +176,14 @@ public class GuestBehaviour : MonoBehaviour
 
     private void Update()
     {
+        if(navMesh.isStopped)
+        {
+            guestAnimator.SetBool("Walking", false);
+        }
+        else
+        {
+            guestAnimator.SetBool("Walking", true);
+        }
         if(alertLevel != 3)
         {
             if (seeingPlayer && playerSeen != null)
@@ -153,7 +191,7 @@ public class GuestBehaviour : MonoBehaviour
                 if (playerSeen.GetComponent<PlayerController>().killing)
                 {
                     StopAllCoroutines();
-                    //gameManager.GetComponent<GameManager>().GuardGameOver();
+                    gameManager.GetComponent<GameManager>().GuardGameOver();
                 }
                 
             }

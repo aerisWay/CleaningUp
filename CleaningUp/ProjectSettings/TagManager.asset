@@ -24,9 +24,9 @@ TagManager:
   - Cam3
   - RoomCollider
   - Players
-  - 
-  - 
-  - 
+  - CameraIgnore
+  - Wall
+  - IgnoreLights
   - 
   - 
   - 

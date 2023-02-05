@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject leftCamera;
     [SerializeField] GameObject rightCamera;
     [SerializeField] GameObject guardPrefab;
+    [SerializeField] GameObject player1Discovered;
+    [SerializeField] GameObject player2Discovered;
     float warningTime;
     float extremeTime;
     CinemachineVirtualCamera vcam1;
@@ -35,17 +37,17 @@ public class GameManager : MonoBehaviour
 
         if(timeWithoutKilling > maxTimeWithoutKilling)
         {
-            GuardGameOver();
+            //GuardGameOver();
         }
         else if(timeWithoutKilling > extremeTime)
         {
             ScreenExtremeAdvises();
-            print("ExtremeAdvises");
+            //print("ExtremeAdvises");
         }
         else if(timeWithoutKilling > warningTime)
         {
             ScreenAdvises();
-            print("Advises");
+            //print("Advises");
         }
     }
 
@@ -65,10 +67,22 @@ public class GameManager : MonoBehaviour
         
     }
 
-    private void GuardGameOver()
+    public void GuardGameOver()
     {
-       
+        Vector3 randomPoint = GuestBehaviour.GetRandomPoint(GameObject.Find("GuardPoint").transform.position, 100.0f);
+
+        Instantiate(guardPrefab, randomPoint, Quaternion.identity);
     }
 
-  
+    public void GameOver()
+    {
+        StartCoroutine("GameOverCanvas");
+    }
+
+    IEnumerator GameOverCanvas()
+    {
+        yield return new WaitForSeconds(5);
+
+        //canvas on
+    }
 }
