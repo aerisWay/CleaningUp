@@ -10,25 +10,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] float maxTimeWithoutKilling;
     [SerializeField] GameObject extremeCanvas;
     [SerializeField] GameObject adviseCanvas;
-    [SerializeField] GameObject leftCamera;
-    [SerializeField] GameObject rightCamera;
     [SerializeField] GameObject guardPrefab;
     [SerializeField] GameObject player1Discovered;
     [SerializeField] GameObject player2Discovered;
     float warningTime;
     float extremeTime;
-    CinemachineVirtualCamera vcam1;
-    CinemachineVirtualCamera vcam2;
-    CinemachineBasicMultiChannelPerlin noise;
+    [SerializeField] CinemachineVirtualCamera vcam1;
+    [SerializeField] CinemachineVirtualCamera vcam2;
 
     private void Awake()
     {
         warningTime = maxTimeWithoutKilling * 6 / 10;
         extremeTime = maxTimeWithoutKilling * 8 / 10;
-
-        vcam1 = leftCamera.GetComponent<CinemachineVirtualCamera>();
-        vcam2 = rightCamera.GetComponent<CinemachineVirtualCamera>();
-        noise = vcam1.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
     private void Update()
@@ -42,29 +35,29 @@ public class GameManager : MonoBehaviour
         else if(timeWithoutKilling > extremeTime)
         {
             ScreenExtremeAdvises();
-            //print("ExtremeAdvises");
         }
         else if(timeWithoutKilling > warningTime)
         {
             ScreenAdvises();
-            //print("Advises");
         }
+    }
+    public void Noise(CinemachineVirtualCamera vcam, float amplitudeGain, float frequencyGain)
+    {
+        CinemachineBasicMultiChannelPerlin noise = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        noise.m_AmplitudeGain = amplitudeGain;
+        noise.m_FrequencyGain = frequencyGain;
     }
 
     private void ScreenAdvises()
     {
-        Shake(3.0f, 5.0f);       
-    }
-
-    private void Shake(float shakeAmplitude, float shakeFrequency)
-    {
-        //noise.m_AmplitudeGain = shakeAmplitude;
-        //noise.m_FrequencyGain = shakeFrequency;
+        Noise(vcam1, 0.5f, 0.2f);
+        Noise(vcam2, 0.5f, 0.2f);
     }
 
     private void ScreenExtremeAdvises()
     {
-        
+        Noise(vcam1, 2f, 0.8f);
+        Noise(vcam2, 2f, 0.8f);
     }
 
     public void GuardGameOver()
