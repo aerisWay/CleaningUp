@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class GameManager : MonoBehaviour
     float extremeTime;
     [SerializeField] CinemachineVirtualCamera vcam1;
     [SerializeField] CinemachineVirtualCamera vcam2;
+    [SerializeField] GameObject winImage;
+    [SerializeField] GameObject loseImage;
+    
 
     private void Awake()
     {
@@ -30,7 +34,7 @@ public class GameManager : MonoBehaviour
 
         if(timeWithoutKilling > maxTimeWithoutKilling)
         {
-            //GuardGameOver();
+            GameOver();
         }
         else if(timeWithoutKilling > extremeTime)
         {
@@ -76,6 +80,23 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(5);
 
-        //canvas on
+        loseImage.SetActive(true);
+    }
+
+    public void ResetScreenShake()
+    {
+        print("Resetea el shake.");
+        CinemachineBasicMultiChannelPerlin noise = vcam1.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        CinemachineBasicMultiChannelPerlin noise2 = vcam2.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        noise.m_AmplitudeGain = 0;
+        noise.m_FrequencyGain = 0; 
+        noise2.m_AmplitudeGain = 0;
+        noise2.m_FrequencyGain = 0;
+        timeWithoutKilling = 0.0f;
+    }
+
+    public void WinWin()
+    {
+        winImage.SetActive(true);
     }
 }

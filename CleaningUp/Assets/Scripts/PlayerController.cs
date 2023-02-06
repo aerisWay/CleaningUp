@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private bool doingAction = false;
     Animator playerAnimator;
 
+    GameObject gameManager;
     [SerializeField] float playerSpeed;
     [SerializeField] float detectionRate;
     [SerializeField] float detectRadius;
@@ -22,11 +23,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool canTakeObject = true;    
     [SerializeField] GameObject knife;
     CharacterController characterController;
+    private AudioSource audioSource;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
         playerAnimator = GetComponentInParent<Animator>();
+        gameManager = GameObject.Find("GameManager");
+        audioSource = GetComponent<AudioSource>();
     }
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -86,10 +90,22 @@ public class PlayerController : MonoBehaviour
         {
             if (currentSelectedInteractable.CompareTag("Human") && killing)
             {
+                audioSource.loop = false;
+                audioSource.Play();
+
                 Debug.Log("Se murió");
                 playerAnimator.SetBool("Attacking", true);
                 currentSelectedInteractable.GetComponentInParent<NavMeshAgent>().isStopped = true;
                 StartCoroutine("AtackRecuperation");
+                currentSelectedInteractable.tag = "Untagged";
+                gameManager.GetComponent<GameManager>().ResetScreenShake();
+                GameObject[] remainingGuest = GameObject.FindGameObjectsWithTag("Human");
+
+                if(remainingGuest.Length == 0)
+                {
+                    gameManager.GetComponent<GameManager>().WinWin();
+                }
+
                 killing = false;
                 
             }
@@ -106,10 +122,11 @@ public class PlayerController : MonoBehaviour
 
 
         currentSelectedInteractable.GetComponent<Hurtable>().Die();
+     
         print("Atack");
         playerAnimator.SetBool("Attacking", false);
         knife.SetActive(false);
-        currentSelectedInteractable = null;
+       
     
     }
     private void ThrowObject()

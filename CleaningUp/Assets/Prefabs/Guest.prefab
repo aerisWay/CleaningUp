@@ -1124,6 +1124,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fcaf9a66142bed458e28b9cb2c3afc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seeingPlayer: 0
+  playerSeen: {fileID: 0}
+  gameManager: {fileID: 0}
   minReactionTime: 0
   maxReactionTime: 0
   decisionDone: 0
@@ -1141,6 +1144,7 @@ MonoBehaviour:
   talkingMultiplier: 0
   curiosityMultiplier: 0
   destination: {x: 0, y: 0, z: 0}
+  alertLevel: 0
 --- !u!114 &8135988678563773007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1457,6 +1461,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8602561270603439522}
   - component: {fileID: 8135988678754005314}
+  - component: {fileID: 865410099}
   m_Layer: 6
   m_Name: Guest
   m_TagString: Human
@@ -1473,7 +1478,7 @@ Transform:
   m_GameObject: {fileID: 8946892455780386584}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -12.999174, y: 0.31, z: 1.6015081}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3309944223361767591}
@@ -1502,6 +1507,28 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!195 &865410099
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8946892455780386584}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 0.92
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &9117177224021971772
 GameObject:
   m_ObjectHideFlags: 0

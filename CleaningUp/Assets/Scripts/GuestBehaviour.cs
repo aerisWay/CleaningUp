@@ -19,7 +19,7 @@ public class GuestBehaviour : MonoBehaviour
 
 
     [Header("Reaction Time")]
-    [SerializeField] GameObject gameManager;
+    GameObject gameManager;
     [SerializeField] float minReactionTime;
     [SerializeField] float maxReactionTime;
     [SerializeField] bool decisionDone = false;
@@ -63,13 +63,14 @@ public class GuestBehaviour : MonoBehaviour
         destination = GetRandomPoint(transform.position, 100.0f);
         navMesh.SetDestination(destination);
         StartCoroutine("DestinationDecision");
+        gameManager = GameObject.Find("GameManager");
 
     }
 
     IEnumerator DestinationDecision()
     {
         yield return new WaitForSeconds(15);
-        destination = GetRandomPoint(transform.position, 20.0f);
+        destination = GetRandomPoint(transform.position, 10.0f);
         navMesh.SetDestination(destination);
         StartCoroutine("DestinationDecision");
 
